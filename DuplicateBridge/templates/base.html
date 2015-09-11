@@ -41,20 +41,24 @@
         max-width: 100%
     }
 
-
   </style>
+
+  {% block includes %}{% endblock %}
 </head>
 <body>
-<nav class="navbar navbar-default navbar-static-top navbar-inverse">
+<nav class="navbar navbar-default navbar-static-top">
   <div class="container">
     <ul class="nav navbar-nav">
       <li class="active">
           <a href="/"><span class="glyphicon glyphicon-home"></span> Home</a>
       </li>
+      <li>
+        <a href="https://github.com/tsiemens/DuplicateBridge"><span class="glyphicon glyphicon-download"></span> Source on GitHub</a>
+      </li>
     </ul>
     <ul class="nav navbar-nav navbar-right">
       <li class="navbar-right">
-          <a href="http://go/brige-vc"><span class="glyphicon glyphicon-book"></span> Sign up for Bridge!</a>
+          <a href="http://go/bridge-vc"><span class="glyphicon glyphicon-book"></span> Sign up for Bridge!</a>
       </li>
     </ul>
   </div>
