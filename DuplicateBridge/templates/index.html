@@ -18,22 +18,25 @@
 
   <div class="container">
     <ol class="breadcrumb">
-      <li class="active">Teams</li>
     </ol>
-    <div id="teams">
-    </div>
+    <div id="teams-page">
+      <div id="teams">
+      </div>
 
-    <div class="row row-pad-md">
-      <div class="col-xs-12">
+      <div class="row row-pad-md">
+        <div class="col-xs-12">
           <button class="btn btn-default" onclick="teamsPage.onAddTeamButtonClick()">+</button>
+        </div>
       </div>
-    </div>
 
-    <div class="row row-pad-lg">
-      <div class="col-xs-12">
+      <div class="row row-pad-lg">
+        <div class="col-xs-12">
           <button class="btn btn-lg btn-primary" onclick="teamsPage.onPlayButtonClick()">Play</button>
+        </div>
       </div>
-    </div>
+    </div> <!-- Teams page -->
+    <div id="play-page" style="display: none;">
+    </div> <!-- Play page -->
     <script>
         {% include "DuplicateBridge.js" %}
     </script>

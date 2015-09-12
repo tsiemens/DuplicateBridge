@@ -1,32 +1,25 @@
+{% include "TeamsPage.js" %}
 
-var teamListItemTemplate = '\
-<div class="row row-pad-md teamrow">\
-  <div class="col-xs-2"><h5 class="teamrow-name"></h5></div>\
-  <div class="col-xs-5">\
-    <input type="text" class="form-control" placeholder="Name" >\
-  </div>\
-  <div class="col-xs-4">\
-    <input type="text" class="form-control" placeholder="Name" >\
-  </div>\
-  <div class="col-xs-1">\
-    <button class="btn btn-danger" onclick="teamsPage.onRemoveTeamButtonClick(this)">X</button>\
-  </div>\
-</div>';
+var _newTeam = function( name1, name2 ) {
+    return {
+        p1: name1,
+        p2: name2,
+        string: function() {
+            return this.p1 + " & " + this.p2;
+        },
+        valid: function() {
+            return this.p1.length > 0 && this.p2.length > 0;
+        }
+    }
+};
 
 var bridgeConfig = {
-    teams : {},
-    teamCount : 0,
+    teams : new Map(),
     teamIs : function( id, name1, name2 ) {
-        if( this.teams[ id ] == undefined ) {
-            this.teamCount++;
-        }
-        this.teams[ id ] = { p1: name1, p2: name2 };
+        this.teams.set( id, _newTeam( name1, name2 ) );
     },
     teamDel : function( id ) {
-        if( this.teams[ id ] != undefined ) {
-            this.teamCount--;
-        }
-        delete this.teams[ id ];
+        this.teams.delete( id );
     }
 }
 
@@ -34,65 +27,79 @@ var appSm = {
     page : 'teams',
 
     pageIs : function( page ) {
+        if( page === this.page ) {
+            return;
+        }
+        var curpage = appDom.pages[ this.page ];
+        var nextpage = appDom.pages[ page ];
         this.page = page;
+        curpage.hide();
+        nextpage.show();
         console.log( 'Page: ' + page );
-        // TODO update page and breadcrumbs
-    }
 
+        appDom.activateBreadcrumb( page );
+    },
+
+    onBreadcrumbClicked : function( e ) {
+        e = $( e );
+        appDom.popBreadcrumbsTo( e.data( 'page' ) );
+        this.pageIs( e.data( 'page' ) );
+    }
 }
 
-var teamsPage = {
-    teamsList : $( '#teams' ),
-    nextTeamIdx : 0,
-
-    teamIs : function() {
-        bridgeConfig.teamIs( this.nextTeamIdx, "", "" );
-        this.addTeamRow( this.nextTeamIdx );
-        this.nextTeamIdx++;
+var appDom = {
+    pages : {
+        teams : $( "#teams-page" ),
+        play : $( "#play-page" )
+    },
+    pageNames : {
+        teams : 'Teams',
+        play : 'Play'
     },
 
-    teamDel : function( id ) {
-        bridgeConfig.teamDel( id );
-        this.removeTeamRow( id );
+    breadcrumb : $( ".breadcrumb" ),
+
+    pushBreadcrumb : function( page ) {
+        var name = this.pageNames[ page ];
+        this.breadcrumb.append(
+                $( $.parseHTML( '<li data-page="' + page + '"  \
+                                onclick="appSm.onBreadcrumbClicked(this)" >'
+                                + name + '</li>' ) ) );
+        this.activateBreadcrumb( page );
     },
 
-    addTeamRow : function( id ) {
-        var teamEntry = $( $.parseHTML( teamListItemTemplate ) );
-        teamEntry.attr( "data-team-id", this.nextTeamIdx );
-        teamEntry.find( ".teamrow-name" ).text( "Team " + this.nextTeamIdx );
-        teamsPage.teamsList.append( teamEntry );
-    },
-
-    removeTeamRow : function( id ) {
-        this.teamsList.find( ".teamrow[data-team-id='" + id + "']" ).remove();
-    },
-
-    onAddTeamButtonClick : function() {
-        this.teamIs();
-    },
-
-    onRemoveTeamButtonClick : function( e ) {
-        e = $( e );
-        var row = e.parents( ".teamrow" );
-        var id = row.data( 'team-id' );
-        this.teamDel( id );
-    },
-
-    onPlayButtonClick : function() {
-        if( bridgeConfig.teamCount % 2 != 0 ) {
-            alert( "Need an even number of teams!" );
-        } else {
-            appSm.pageIs( 'play' );
+    activateBreadcrumb : function( page ) {
+        var breadcrumbs = this.breadcrumb.children();
+        for( var i = 0; i < breadcrumbs.length; i++ ) {
+            var child = $( breadcrumbs[ i ] )
+            var childPage = child.data( 'page' )
+            if( childPage === page ) {
+                child.addClass( 'active' );
+                child.text( this.pageNames[ childPage ] );
+            } else {
+                child.removeClass( 'active' );
+                child.html( '<a href="#">' + this.pageNames[ childPage ] + '</a>' );
+            }
         }
     },
 
-    updateTeamMemberNames : function() {
-
+    popBreadcrumbsTo : function( page ) {
+        var breadcrumbs = this.breadcrumb.children();
+        for( var i = breadcrumbs.length - 1; i > 0; i-- ) {
+            var child = $( breadcrumbs[ i ] )
+            if( child.data( 'page' ) == page ) {
+                break;
+            } else {
+                child.remove();
+            }
+        }
+        this.activateBreadcrumb( page );
     },
 }
 
 function main() {
-    teamsPage.teamIs();
+   appDom.pushBreadcrumb( 'teams' );
+   teamsPage.teamIs();
 }
 
 main();
