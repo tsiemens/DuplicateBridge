@@ -20,30 +20,21 @@
     <ol class="breadcrumb">
       <li class="active">Teams</li>
     </ol>
-    <div class="row row-pad-md">
-        <div class="col-xs-2"><h5>Team 1</h5></div>
-        <div class="col-xs-5">
-          <input type="text" class="form-control" placeholder="Name" >
-        </div>
-        <div class="col-xs-5">
-          <input type="text" class="form-control" placeholder="Name" >
-        </div>
+    <div id="teams">
     </div>
 
     <div class="row row-pad-md">
       <div class="col-xs-12">
-          <button class="btn btn-default" onclick="foo()">+</button>
+          <button class="btn btn-default" onclick="teamsPage.onAddTeamButtonClick()">+</button>
       </div>
     </div>
 
     <div class="row row-pad-lg">
       <div class="col-xs-12">
-        <button class="btn btn-lg btn-primary" onclick="foo()">Next Step</button>
+          <button class="btn btn-lg btn-primary" onclick="teamsPage.onPlayButtonClick()">Play</button>
       </div>
     </div>
     <script>
-    function foo() {
-        console.log( 'Button!' );
-    }
+        {% include "DuplicateBridge.js" %}
     </script>
 {% endblock %}
