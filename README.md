@@ -1,8 +1,10 @@
 # DuplicateBridge
 
-So far, a barebones Python app, which can easily be deployed to Heroku.
+A webapp which can track and score Duplicate Bridge games.
 
-This application support the [Getting Started with Python on Heroku](https://devcenter.heroku.com/articles/getting-started-with-python) article - check it out.
+Made using the Django framework, and can easily be deployed to Heroku.
+
+-----
 
 ## Running Locally
 
