@@ -1,12 +1,11 @@
 
 var teamListItemTemplate = '\
 <div class="row row-pad-md teamrow">\
-  <div class="col-xs-12 col-lg-1"><h5 class="teamrow-name"></h5></div>\
   <div class="col-xs-5">\
-    <input id="team-p1" type="text" class="form-control" placeholder="Name" >\
+    <input id="team-p1" type="text" class="form-control team-member-name" placeholder="Name" >\
   </div>\
   <div class="col-xs-5">\
-    <input id="team-p2" type="text" class="form-control" placeholder="Name" >\
+    <input id="team-p2" type="text" class="form-control team-member-name" placeholder="Name" >\
   </div>\
   <div class="col-xs-1">\
     <button class="btn btn-danger" onclick="teamsPage.onRemoveTeamButtonClick(this)">X</button>\
@@ -31,7 +30,6 @@ var teamsPage = {
    addTeamRow : function( id ) {
       var teamEntry = $( $.parseHTML( teamListItemTemplate ) );
       teamEntry.attr( "data-team-id", this.nextTeamIdx );
-      teamEntry.find( ".teamrow-name" ).text( "Team " + this.nextTeamIdx );
       this.teamsList.append( teamEntry );
    },
 

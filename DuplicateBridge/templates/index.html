@@ -15,7 +15,6 @@
 {% endblock %}
 
 {% block content %}
-
   <div class="container">
     <ol class="breadcrumb">
     </ol>
@@ -31,11 +30,20 @@
 
       <div class="row row-pad-lg">
         <div class="col-xs-12">
-          <button class="btn btn-lg btn-primary" onclick="teamsPage.onPlayButtonClick()">Play</button>
+          <button id="play-button" class="btn btn-lg btn-primary" onclick="teamsPage.onPlayButtonClick()">Play</button>
         </div>
       </div>
     </div> <!-- Teams page -->
     <div id="play-page" style="display: none;">
+      <div class="panel with-nav-tabs panel-default">
+        <div class="panel-heading" style="padding-bottom:0px;">
+          <ul id="round-tabs" class="nav nav-tabs">
+          </ul>
+        </div>
+        <div id="round-tab-container" class="panel-body">
+        </div>
+      </div>
+      <h3>Total Scores</h3>
     </div> <!-- Play page -->
     <script>
         {% include "DuplicateBridge.js" %}
