@@ -3,6 +3,7 @@ var HEARTS_HTML = '<span style="color:red">♥</span>'
 var DIAMONDS_HTML = '<span style="color:red">♦</span>'
 var CLUBS_HTML = '<span style="color:black">♣</span>'
 
+var NO_TRUMPS = 'noTrumps';
 var SPADES = 'spades';
 var HEARTS = 'hearts';
 var DIAMONDS = 'diamonds';
