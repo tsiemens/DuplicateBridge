@@ -56,10 +56,10 @@ function updateDropdown( e ){
 
 function _newSuitDropdown() {
    return _newDropdown( 'Suit', [
-         { id: 'spades', html: SPADES },
-         { id: 'hearts', html: HEARTS },
-         { id: 'diamonds', html: DIAMONDS },
-         { id: 'clubs', html: CLUBS }
+         { id: SPADES, html: SPADES_HTML },
+         { id: HEARTS, html: HEARTS_HTML },
+         { id: DIAMONDS, html: DIAMONDS_HTML },
+         { id: CLUBS, html: CLUBS_HTML }
       ], 'updateDropdown(this)' );
 }
 
@@ -69,7 +69,7 @@ function esc( str ) {
 
 function _newTeamDropdown() {
    teams = [];
-   bridgeConfig.teams.forEach( function( val, key ) {
+   appSm.config.teams.forEach( function( val, key ) {
       teams.push( { id: key, html: esc( val.string() ) } )
    } );
    return _newDropdown( 'Team', teams, 'updateDropdown(this)' );
@@ -88,7 +88,7 @@ function _newRoundTab() {
       genDomElement: function( round ) {
          var tab = $( $.parseHTML( roundTabTemplate ) );
          tab.attr( 'data-round', round );
-         for( var i = 0; i < bridgeConfig.teams.size / 2; i++ ) {
+         for( var i = 0; i < appSm.config.teams.size / 2; i++ ) {
             tab.find( '.round-groups' ).append( _newGroupRow( i ) );
          }
          tab.append( _newSuitDropdown() );

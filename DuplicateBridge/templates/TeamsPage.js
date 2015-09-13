@@ -14,22 +14,10 @@ var teamListItemTemplate = '\
 
 var teamsPage = {
    teamsList : $( '#teams' ),
-   nextTeamIdx : 0,
-
-   teamIs : function() {
-      bridgeConfig.teamIs( this.nextTeamIdx, "", "" );
-      this.addTeamRow( this.nextTeamIdx );
-      this.nextTeamIdx++;
-   },
-
-   teamDel : function( id ) {
-      bridgeConfig.teamDel( id );
-      this.removeTeamRow( id );
-   },
 
    addTeamRow : function( id ) {
       var teamEntry = $( $.parseHTML( teamListItemTemplate ) );
-      teamEntry.attr( "data-team-id", this.nextTeamIdx );
+      teamEntry.attr( "data-team-id", id );
       this.teamsList.append( teamEntry );
    },
 
@@ -38,14 +26,14 @@ var teamsPage = {
    },
 
    onAddTeamButtonClick : function() {
-      this.teamIs();
+      appSm.teamAdd( "", "" )
    },
 
    onRemoveTeamButtonClick : function( e ) {
       e = $( e );
       var row = e.parents( ".teamrow" );
       var id = row.data( 'team-id' );
-      this.teamDel( id );
+      appSm.teamDel( id );
    },
 
    onPlayButtonClick : function() {
@@ -60,20 +48,20 @@ var teamsPage = {
       var teamrows = $( this.teamsList.children() );
       for( var i = 0; i < teamrows.length; i++ ) {
          var row = $( teamrows[ i ] );
-         var team = bridgeConfig.teams.get( row.data( 'team-id' ) );
-         team.p1 = row.find( '#team-p1' ).val()
-         team.p2 = row.find( '#team-p2' ).val()
+         appSm.teamIs( row.data( 'team-id' ),
+               row.find( '#team-p1' ).val(),
+               row.find( '#team-p2' ).val() );
       }
    },
 
    teamsValid: function() {
-      if( bridgeConfig.teams.size % 2 != 0 ) {
+      if( appSm.config.teams.size % 2 != 0 ) {
          alert( "Need an even number of teams!" );
          return false;
       }
-      var keys = bridgeConfig.teams.keys();
+      var keys = appSm.config.teams.keys();
       var failed = false;
-      bridgeConfig.teams.forEach( function( val ) {
+      appSm.config.teams.forEach( function( val ) {
          if( !failed && !val.valid() ) {
             alert( "All players need a name!" );
             failed = true;

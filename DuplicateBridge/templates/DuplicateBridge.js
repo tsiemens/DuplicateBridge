@@ -1,12 +1,20 @@
-var SPADES = '<span style="color:black">♠</span>'
-var HEARTS = '<span style="color:red">♥</span>'
-var DIAMONDS = '<span style="color:red">♦</span>'
-var CLUBS = '<span style="color:black">♣</span>'
+var SPADES_HTML = '<span style="color:black">♠</span>'
+var HEARTS_HTML = '<span style="color:red">♥</span>'
+var DIAMONDS_HTML = '<span style="color:red">♦</span>'
+var CLUBS_HTML = '<span style="color:black">♣</span>'
+
+var SPADES = 'spades';
+var HEARTS = 'hearts';
+var DIAMONDS = 'diamonds';
+var CLUBS = 'clubs';
+
+var N_S = 'northSouth';
+var E_W = 'eastWest';
 
 {% include "TeamsPage.js" %}
 {% include "PlayPage.js" %}
 
-var _newTeam = function( name1, name2 ) {
+function _newTeam( name1, name2 ) {
    return {
       p1: name1,
       p2: name2,
@@ -19,48 +27,71 @@ var _newTeam = function( name1, name2 ) {
    }
 };
 
-var _newRound = function() {
-  // TODO
+function _newGroup( _teamId2, _teamId2 ) {
+   return { teamId1: _teamId1, teamId2: _teamId2 };
 }
 
-var bridgeConfig = {
-   teams : new Map(),
-   teamIs : function( id, name1, name2 ) {
-      this.teams.set( id, _newTeam( name1, name2 ) );
-   },
-   teamDel : function( id ) {
-      this.teams.delete( id );
-   },
+function _newMatch() {
+   return { suit: null, level: 0, inContract: null };
+}
 
-   rounds : []
+function _newBoard() {
+   return { matches: [] };
+}
+
+function _newRound() {
+   return {
+      groups: [],
+      boards: []
+   }
 }
 
 var appSm = {
-   page : 'teams',
+   config: {
+      page: null,
+      teams: new Map(),
+      rounds: []
+   },
+   nextTeamId: 0,
 
    pageIs : function( page ) {
-      if( page === this.page ) {
+      if( page === this.config.page ) {
          return;
       }
-      var curpage = appDom.pages[ this.page ];
+      var curpage = appDom.pages[ this.config.page ];
       var nextpage = appDom.pages[ page ];
-      this.page = page;
-      curpage.hide();
+      this.config.page = page;
+      if( curpage ) {
+         curpage.hide();
+      }
       nextpage.show();
       console.log( 'Page: ' + page );
 
       appDom.activateBreadcrumb( page );
 
       if( page === 'play' ) {
-         var roundNum = bridgeConfig.rounds.length;
+         var roundNum = this.config.rounds.length;
          for( var i = 0; i < roundNum; i++ ) {
             playPage.popRoundTab();
-            bridgeConfig.rounds.pop();
+            this.config.rounds.pop();
          }
-         bridgeConfig.rounds.push( _newRound() );
+         this.config.rounds.push( _newRound() );
          playPage.addRoundTab();
       }
 
+   },
+
+   teamIs : function( id, name1, name2 ) {
+      this.config.teams.set( id, _newTeam( name1, name2 ) );
+   },
+   teamAdd : function( name1, name2 ) {
+      this.config.teams.set( this.nextTeamId, _newTeam( name1, name2 ) );
+      teamsPage.addTeamRow( this.nextTeamId );
+      this.nextTeamId++;
+   },
+   teamDel : function( id ) {
+      this.config.teams.delete( id );
+      teamsPage.removeTeamRow( id );
    },
 
    onBreadcrumbClicked : function( e ) {
@@ -121,10 +152,10 @@ var appDom = {
 }
 
 function main() {
-   $( '#nav-home' ).html( SPADES + HEARTS + " Bridge " + DIAMONDS + CLUBS );
-   appDom.pushBreadcrumb( 'teams' );
-   teamsPage.teamIs();
-   teamsPage.teamIs();
+   $( '#nav-home' ).html( SPADES_HTML + HEARTS_HTML + " Bridge " + DIAMONDS_HTML + CLUBS_HTML );
+   appSm.pageIs( 'teams' );
+   appSm.teamAdd( "", "" );
+   appSm.teamAdd( "", "" );
 
    // TODO DEBUG SETUP
    $('.team-member-name').val('BOBBBYYYYY');
