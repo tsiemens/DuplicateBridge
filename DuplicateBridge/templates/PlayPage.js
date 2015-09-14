@@ -26,20 +26,38 @@ var groupRowTemplate = '\
 </div><hr>';
 
 var boardMatchTemplate = '\
+<div>\
 <div class="row">\
-  <div class="col-xs-12 match-teams"/>\
-  <div class="col-xs-3">Contract:</div>\
-  <div class="col-xs-4 contract-suit"/>\
-  <div class="col-xs-4 contract-tricks"/>\
+<h5 class="col-xs-12 match-teams">lkjdsfkljfds</h5>\
 </div>\
-<div class="row row-pad-md">\
-  <div class="col-xs-2 col-sm-1">Played: </div>\
-  <div class="col-xs-10 col-sm-11 contract-team"/>\
+<div class="row">\
+<form class="col-xs-12 col-sm-6 form-inline">\
+  <label class="">Contract </label>\
+  <label class="contract-tricks"/>\
+  <label class="contract-suit"/>\
+  <label class="contract-doubled"/>\
+</form>\
+<form class="col-xs-12 col-sm-6 form-inline">\
+  <input type="checkbox" class="vulnerable"> Vulnerable\
+</form>\
 </div>\
-<div class="row row-pad-md">\
-  <div class="col-xs-2 col-sm-1">Made: </div>\
-  <div class="col-xs-10 col-sm-11 tricks-made"/>\
-<div>';
+<div class="row">\
+<form class="col-xs-12 col-sm-6 form-inline">\
+  <label class="">Played </label>\
+  <label class="contract-team"/>\
+</form>\
+<form class="col-xs-12 col-sm-6 form-inline">\
+  <label class="">Made </label>\
+  <label class="tricks-made"/>\
+</form>\
+</div>\
+<div class="row">\
+  <form class="col-xs-12 form-inline">\
+    <label >Score: </label>\
+    <label class="round-score"/>\
+  </form>\
+</div>\
+</div>';
 
 var boardTemplate = '\
 <div class="board">\
@@ -86,6 +104,16 @@ function _newSuitDropdown() {
       ], 'updateDropdown(this)' );
 }
 
+function _newDoubledDropdown() {
+   var dd = _newDropdown( '', [
+         { id: 1, html: 'Undoubled' },
+         { id: 2, html: 'Doubled' },
+         { id: 4, html: 'Redoubled' }
+      ], 'updateDropdown(this)' );
+   updateDropdown( dd.find( '#1' ).get( 0 ) );
+   return dd;
+}
+
 function esc( str ) {
    return $("<div>").text(str).html();
 }
@@ -130,11 +158,13 @@ function _newBoardRow( boardId ) {
    // for loop
    var matches = board.find( '.board-matches' );
    var match = $( $.parseHTML( boardMatchTemplate ) );
-   match.find( '.match-teams' ).text( 'bob & bob vs joe & joe' );
+   match.find( '.match-teams' ).html( '<b>' + esc( 'bob & bob' ) + '</b> vs <b>' + esc(' joe & joe' ) + '</b>' );
    match.find( '.contract-suit' ).append( _newSuitDropdown() );
-   match.find( '.contract-tricks' ).append( _newContractTricksDropdown() )
-   match.find( '.contract-team' ).append( _newTeamDropdown() )
-   match.find( '.tricks-made' ).append( _newMadeTricksDropdown() )
+   match.find( '.contract-tricks' ).append( _newContractTricksDropdown() );
+   match.find( '.contract-doubled' ).append( _newDoubledDropdown() );
+   match.find( '.contract-team' ).append( _newTeamDropdown() );
+   match.find( '.tricks-made' ).append( _newMadeTricksDropdown() );
+   match.find( '.round-score' ).text( '100 E/W' );
    matches.append( match );
    return board;
 }

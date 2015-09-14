@@ -33,7 +33,12 @@ function _newGroup( _teamId2, _teamId2 ) {
 }
 
 function _newMatch() {
-   return { suit: null, level: 0, inContract: null };
+   return { suit: null,
+            level: 0,
+            doubleFactor: 1,
+            vulnerable: false,
+            inContract: null,
+            made: 0 };
 }
 
 function _newBoard() {
@@ -46,6 +51,64 @@ function _newRound() {
       boards: []
    }
 }
+
+function isMajor( suit ) {
+   return suit === SPADES || suit === HEARTS;
+}
+
+function isMinor( suit ) {
+   return suit === DIAMONDS || suit === CLUBS;
+}
+
+// CALCULATOR
+function matchScore( match ) {
+   var tricksOverAvg = Math.max( match.made - 6, 0 );
+   var bidTricks = Math.min( tricksOverAvg, match.level );
+   var overTricks = Math.max( tricksOverAvg - match.level, 0 );
+   var underTricks = Math.max( 6 + match.level - match.made, 0 );
+
+   var contractPoints = 0;
+   if( match.suit === NO_TRUMPS ) {
+      contractPoints = bidTricks * 30;
+      if( bidTricks > 0 ) {
+         contractPoints += 10;
+      }
+   } else if( isMajor( match.suit ) ) {
+      contractPoints = bidTricks * 30;
+   } else {
+      contractPoints = bidTricks * 20;
+   }
+   contractPoints *= match.doubleFactor;
+
+   var overTrickPoints = 0;
+   if( match.doubleFactor === 1 ) {
+      if( isMinor( match.suit ) ) {
+         overTrickPoints = overTricks * 20;
+      } else {
+         overTrickPoints = overTricks * 30;
+      }
+   } else {
+      var doubleFac = match.doubleFactor / 2;
+      var vulnFac = match.vulnerable ? 2 : 1;
+      overTrickPoints = overTricks * 100 * doubleFac * vulnFac;
+   }
+
+   var slamBonus = 0;
+   // TODO
+}
+
+var m = _newMatch();
+m.level = 4;
+m.made = 10;
+matchScore( m );
+m.made = 9;
+matchScore( m );
+m.made = 13;
+matchScore( m );
+m.made = 6;
+matchScore( m );
+m.made = 0;
+matchScore( m );
 
 var appSm = {
    config: {
