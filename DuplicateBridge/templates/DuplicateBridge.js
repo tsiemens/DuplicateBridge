@@ -67,6 +67,8 @@ function matchScore( match ) {
    var overTricks = Math.max( tricksOverAvg - match.level, 0 );
    var underTricks = Math.max( 6 + match.level - match.made, 0 );
 
+   console.assert( match.suit  && match.level > 0 && match.doubleFactor );
+
    var contractPoints = 0;
    if( match.suit === NO_TRUMPS ) {
       contractPoints = bidTricks * 30;
@@ -94,21 +96,58 @@ function matchScore( match ) {
    }
 
    var slamBonus = 0;
-   // TODO
-}
+   if( bidTricks == 6 && tricksOverAvg >= 6 ) {
+      slamBonus = match.vulnerable ? 500 : 750;
+   } else if( bidTricks == 7 && tricksOverAgv == 7 ) {
+      slamBonus = match.vulnerable ? 1000 : 1500;
+   }
 
-var m = _newMatch();
-m.level = 4;
-m.made = 10;
-matchScore( m );
-m.made = 9;
-matchScore( m );
-m.made = 13;
-matchScore( m );
-m.made = 6;
-matchScore( m );
-m.made = 0;
-matchScore( m );
+   var insultBonus = 0;
+   if( match.doubleFactor > 1 && tricksOverAvg >= bidTricks ) {
+      insultBonus = match.doubleFactor == 2 ? 50 : 100;
+   }
+
+   var penalty = 0;
+   var firstUt = underTricks > 0 ? 1 : 0;
+   var secondThirdUt = Math.max( Math.min( underTricks - 1, 2 ), 0 );
+   var fourthPlusUt = Math.max( underTricks - 3, 0 );
+   if( match.vulnerable ) {
+      if( match.doubleFactor >= 2 ) {
+         penalty += firstUt * 200;
+         penalty += secondThirdUt * 300;
+         penalty += fouthPlusUt * 300;
+         if( match.doubleFactor == 4 ) {
+            penalty *= 2;
+         }
+      } else {
+         penalty += underTricks * 100;
+      }
+   } else {
+      if( match.doubleFactor >= 2 ) {
+         penalty += firstUt * 100;
+         penalty += secondThirdUt * 200;
+         penalty += fouthPlusUt * 300;
+         if( match.doubleFactor == 4 ) {
+            penalty *= 2;
+         }
+      } else {
+         penalty += underTricks * 50;
+      }
+   }
+
+   var gamePoints = 0;
+   if( contractPoints >= 100 ) {
+      gamePoints = match.vulnerable ? 500 : 300;
+   } else if ( underTricks == 0 ) {
+      gamePoints = 50;
+   }
+
+   if( underTricks == 0 ) {
+      return contractPoints + overTrickPoints + slamBonus + insultBonus + gamePoints;
+   } else {
+      return - penalty;
+   }
+}
 
 var appSm = {
    config: {

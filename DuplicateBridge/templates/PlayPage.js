@@ -28,7 +28,7 @@ var groupRowTemplate = '\
 var boardMatchTemplate = '\
 <div>\
 <div class="row">\
-<h5 class="col-xs-12 match-teams">lkjdsfkljfds</h5>\
+<h5 class="col-xs-12 match-teams"></h5>\
 </div>\
 <div class="row">\
 <form class="col-xs-12 col-sm-6 form-inline">\
@@ -81,7 +81,7 @@ function _newDropdown( defaultText, items, onclick ) {
    var menu = dropdown.find( '.dropdown-menu' );
    for( var i = 0; i < items.length; i++ ) {
       menu.append( $( $.parseHTML(
-            '<li id="' + items[ i ].id + '" onclick="' + onclick + '"><a href="#">' +
+            '<li id="' + items[ i ].id + '" onclick="' + onclick + '"><a href="javascript:void(0);">' +
             items[ i ].html + '</a></li>' ) ) );
    }
    return dropdown;
