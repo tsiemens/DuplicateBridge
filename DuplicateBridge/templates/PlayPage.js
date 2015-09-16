@@ -4,8 +4,10 @@ var roundTabStubTemplate = '<li role="round" class="round-tab-stub" onclick="pla
 var roundTabTemplate = '\
 <div class="round-tab">\
   <h4>Groups</h4>\
-  <div class="round-groups">\
-  </div>\
+  <ul class="round-groups list-group" style="padding-left:15px; padding-right:15px">\
+  </ul>\
+  <div class="alert alert-danger invalid-groups-alert" role="alert">Each team must be selected only once.</div>\
+  <div class="alert alert-warning select-groups-alert" role="alert">Select a team for each position.</div>\
   <div class="round-boards">\
   </div>\
   <h4>Round Points</h4>\
@@ -13,20 +15,17 @@ var roundTabTemplate = '\
   </div>\
 </div>';
 
-var roundBoardTemplate = '\
-<div class="round-board">\
-</div>';
-
 var groupRowTemplate = '\
-<div class="row">\
+<li class="list-group-item row">\
   <div class="col-xs-1 col-md-1" style="padding-top:5px">N/S: </div>\
   <div class="group-team-selector team-ns col-xs-11 col-md-4"/>\
   <div class="col-xs-1 col-md-1" style="padding-top:5px">E/W: </div>\
   <div class="group-team-selector team-ew col-xs-11 col-md-4"/>\
-</div><hr>';
+</li>\
+';
 
 var boardMatchTemplate = '\
-<div>\
+<li class="list-group-item">\
 <div class="row">\
 <h5 class="col-xs-12 match-teams"></h5>\
 </div>\
@@ -57,12 +56,12 @@ var boardMatchTemplate = '\
     <label class="round-score"/>\
   </form>\
 </div>\
-</div>';
+</li>';
 
 var boardTemplate = '\
 <div class="board">\
   <h4 class="board-name"/>\
-  <div class="board-matches"/>\
+  <ul class="board-matches list-group"/>\
 </div>';
 
 var nextDropdownIdIdx = 0;
@@ -123,7 +122,16 @@ function _newTeamDropdown() {
    appSm.config.teams.forEach( function( val, key ) {
       teams.push( { id: key, html: esc( val.string() ) } )
    } );
-   return _newDropdown( 'Team', teams, 'updateDropdown(this)' );
+   return _newDropdown( 'Team', teams, 'appSm.onGroupTeamSelected(this)' );
+}
+
+function _newNSEWDropdown() {
+   var dd = _newDropdown( '', [
+         { id: N_S, html: 'N/S' },
+         { id: E_W, html: 'E/W' },
+      ], 'updateDropdown(this)' );
+   updateDropdown( dd.find( '#1' ).get( 0 ) );
+   return dd;
 }
 
 function _newContractTricksDropdown() {
@@ -162,7 +170,7 @@ function _newBoardRow( boardId ) {
    match.find( '.contract-suit' ).append( _newSuitDropdown() );
    match.find( '.contract-tricks' ).append( _newContractTricksDropdown() );
    match.find( '.contract-doubled' ).append( _newDoubledDropdown() );
-   match.find( '.contract-team' ).append( _newTeamDropdown() );
+   match.find( '.contract-team' ).append( _newNSEWDropdown() );
    match.find( '.tricks-made' ).append( _newMadeTricksDropdown() );
    match.find( '.round-score' ).text( '100 E/W' );
    matches.append( match );
@@ -176,9 +184,8 @@ function _newRoundTab() {
          tab.attr( 'data-round', round );
          for( var i = 0; i < appSm.config.teams.size / 2; i++ ) {
             tab.find( '.round-groups' ).append( _newGroupRow( i ) );
-            tab.find( '.round-boards' ).append( _newBoardRow( 0 ) )
+            tab.find( '.round-boards' ).append( _newBoardRow( i ) )
          }
-         tab.append( _newSuitDropdown() );
          return tab;
       }
       // TODO

@@ -41,15 +41,24 @@ function _newMatch() {
             made: 0 };
 }
 
-function _newBoard() {
-   return { matches: [] };
+function _newBoard( numMatches ) {
+   var board = { matches: [] };
+   for( var i = 0; i < numMatches; i++ ) {
+      board.matches.push( _newMatch() );
+   }
+   return board;
 }
 
-function _newRound() {
-   return {
+function _newRound( numGroups ) {
+   var round = {
       groups: [],
       boards: []
    }
+   for( var i = 0; i < numGroups; i++ ) {
+      round.groups.push( { N_S: null, E_W: null } );
+      round.boards.push( _newBoard( numGroups ) );
+   }
+   return round;
 }
 
 function isMajor( suit ) {
@@ -148,6 +157,7 @@ function matchScore( match ) {
       return - penalty;
    }
 }
+// CALCULATOR END
 
 var appSm = {
    config: {
@@ -178,8 +188,7 @@ var appSm = {
             playPage.popRoundTab();
             this.config.rounds.pop();
          }
-         this.config.rounds.push( _newRound() );
-         playPage.addRoundTab();
+         this.roundIs();
       }
 
    },
@@ -195,6 +204,17 @@ var appSm = {
    teamDel : function( id ) {
       this.config.teams.delete( id );
       teamsPage.removeTeamRow( id );
+   },
+
+   roundIs : function() {
+      var round = _newRound( appSm.config.teams.size / 2 );
+      this.config.rounds.push( round );
+      playPage.addRoundTab();
+   },
+
+   onGroupTeamSelected : function( e ) {
+      updateDropdown( e );
+      e = $( e );
    },
 
    onBreadcrumbClicked : function( e ) {
